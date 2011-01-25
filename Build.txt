@@ -1,0 +1,40 @@
+How to build the Ptex Shaders
+
+This project uses CMake.
+Different applications use different compilers and support different platforms (32 Bits and 32 Bits).
+
+This tutorial describes how to setup a 3dsMax plug-in project using CMake:
+http://www.crackart.org/wiki/HowTo/CMakeForMax
+
+For example, 3ds Max 2010 requires Visual Studio 2008, and can be compiled in 32 Bits and 64 Bits.
+
+To build the plug-ins and shaders for 3ds Max 2010 for 32 Bits
+
+Open CMake
+Set the source code folder
+Set the build folder using a last name:
+
+Source : C:/SceneEngine/Git/PtexShaders/code
+Build  : C:/SceneEngine/Git/PtexShaders/build_msvc90_32
+
+msvc90 is Visual Studio 9.0 aka 2008
+32 is 32 Bits
+
+Configure and Generate.
+
+Note:
+
+For simplicity I copy all the MaxSDK and MayaSDK folders to a C:\Libraries folder:
+
+For 3dsMax 2010...
+
+C:\Libraries\maxsdk\12
+C:\Libraries\maxsdk\12\mentalray
+
+For 3dsMax 2011...
+
+C:\Libraries\maxsdk\13
+C:\Libraries\maxsdk\13\mentalray
+
+There is a way to allow the user to set these folders in CMake. 
+If you know how please drop a message to diego at mankua dot com.
