@@ -1,0 +1,279 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_TEXTURE DIALOGEX 0, 0, 217, 86
+STYLE DS_SETFONT | WS_CHILD | WS_VISIBLE
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TEX_UVW_CHANNEL,"CustEdit",WS_TABSTOP,140,30,35,10
+    CONTROL         "",IDC_TEX_UVW_CHANNEL_SPIN,"SpinnerControl",0x0,176,30,7,10
+    GROUPBOX        "Parameters",IDC_STATIC,4,0,209,59
+    LTEXT           "UVW :",IDC_STATIC,11,31,22,8
+    CONTROL         "",IDC_TEX_FITER_SIZE,"CustEdit",WS_TABSTOP,140,45,35,10
+    CONTROL         "",IDC_TEX_FITER_SIZE_SPIN,"SpinnerControl",0x0,176,45,7,10
+    LTEXT           "Filter :",IDC_STATIC,11,46,20,8
+    LTEXT           "Ptex File :",IDC_STATIC,11,16,32,8
+    CONTROL         "",IDC_TEX_PTEX_FILE,"CustButton",WS_TABSTOP,45,13,162,12
+    COMBOBOX        IDC_TEX_UVW_SOURCE,45,28,90,45,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_TEX_FILTER_TYPE,45,43,90,53,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "",IDC_STATIC,4,57,209,24
+    PUSHBUTTON      "About",IDC_TEX_ABOUT,167,64,43,14
+    PUSHBUTTON      "Help",IDC_TEX_HELP,123,64,43,14
+END
+
+IDD_MODIFIER DIALOGEX 0, 0, 108, 71
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_MOD_UVW_CHANNEL,"CustEdit",WS_TABSTOP,65,16,26,10
+    CONTROL         "",IDC_MOD_UVW_CHANNEL_SPIN,"SpinnerControl",0x0,92,16,7,10
+    GROUPBOX        "Channel",IDC_STATIC,4,4,100,41
+    CONTROL         "Map Channel:",IDC_MOD_UVW_TYPE_UVW,"Button",BS_AUTORADIOBUTTON,7,17,57,10
+    CONTROL         "Vertex Color Channel",IDC_MOD_UVW_TYPE_VCOL,"Button",BS_AUTORADIOBUTTON,7,31,84,10
+    GROUPBOX        "",IDC_STATIC,4,43,100,24
+    PUSHBUTTON      "About",IDC_MOD_ABOUT,54,50,43,14
+    PUSHBUTTON      "Help",IDC_MOD_HELP,10,50,43,14
+END
+
+IDD_UTILITY DIALOGEX 0, 0, 108, 330
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Export Objects",IDC_UTIL_EXPORT_OBJECTS,9,244,88,14
+    PUSHBUTTON      "Close",IDC_UTIL_CLOSE,9,310,88,14
+    GROUPBOX        "Selected Objects",IDC_STATIC,2,2,104,24
+    CTEXT           "Static",IDC_UTIL_SELECTION,10,13,84,10
+    GROUPBOX        "Create",IDC_STATIC,2,29,104,131
+    PUSHBUTTON      "Create",IDC_UTIL_CREATE_PTEX,10,142,88,14
+    CONTROL         "",IDC_UTIL_TEXEL_SIZE,"CustEdit",WS_TABSTOP,57,67,34,10
+    CONTROL         "",IDC_UTIL_TEXEL_SIZE_SPIN,"SpinnerControl",0x0,92,67,7,10
+    LTEXT           "Texel Size :",IDC_STATIC,10,68,38,8
+    CONTROL         "",IDC_UTIL_UVW_CHANNEL,"CustEdit",WS_TABSTOP,65,40,26,10
+    CONTROL         "",IDC_UTIL_UVW_CHANNEL_SPIN,"SpinnerControl",0x0,92,40,7,10
+    GROUPBOX        "Paint",IDC_STATIC,2,219,104,43
+    CONTROL         "Map Channel :",IDC_UTIL_UVW_TYPE_UVW,"Button",BS_AUTORADIOBUTTON | WS_GROUP,6,40,59,10
+    CONTROL         "Vertex Color Channel",IDC_UTIL_UVW_TYPE_VCOL,"Button",BS_AUTORADIOBUTTON,6,53,84,10
+    COMBOBOX        IDC_UTIL_MODE,34,81,65,45,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Mode :",IDC_STATIC,10,83,23,8
+    COMBOBOX        IDC_UTIL_TYPE,33,98,65,45,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Type :",IDC_STATIC,9,100,22,8
+    CONTROL         "",IDC_UTIL_FILL_COLOR_SWATCH,"ColorSwatch",WS_TABSTOP,57,113,41,13
+    CONTROL         "",IDC_UTIL_FILL_NOISE,"CustEdit",WS_TABSTOP,57,128,34,10
+    CONTROL         "",IDC_UTIL_FILL_NOISE_SPIN,"SpinnerControl",0x0,92,128,7,10
+    PUSHBUTTON      "Paint Objects",IDC_UTIL_PAINT_OBJECTS,9,229,88,14
+    GROUPBOX        "Display",IDC_STATIC,2,262,104,29
+    PUSHBUTTON      "Create Display Bitmap",IDC_UTIL_EXPORT_OBJECTS2,10,273,88,14
+    PUSHBUTTON      "Texture",IDC_UTIL_BAKE_TEXTURE,10,171,88,14
+    LTEXT           "Color :",IDC_STATIC,9,116,22,8
+    LTEXT           "Noise :",IDC_STATIC,9,128,23,8
+    GROUPBOX        "Bake",IDC_STATIC,2,161,104,58
+    PUSHBUTTON      "Ptex File",IDC_UTIL_BAKE_PTEX_FILE,10,186,88,14
+    PUSHBUTTON      "Bake",IDC_UTIL_BAKE_BAKE,10,200,88,14
+    PUSHBUTTON      "About",IDC_UTIL_ABOUT,53,296,43,14
+    GROUPBOX        "",IDC_STATIC,2,289,104,39
+    PUSHBUTTON      "Help",IDC_UTIL_HELP,9,296,43,14
+END
+
+IDD_PTEX_FILE_INFO DIALOGEX 0, 0, 281, 273
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ptex File Info"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,225,252,50,14
+    DEFPUSHBUTTON   "OK",IDOK,173,252,50,14
+    CONTROL         "",IDC_UTIL_SELECTION,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,7,267,200,WS_EX_CLIENTEDGE
+    GROUPBOX        "",IDC_STATIC,7,210,267,38
+    LTEXT           "Number of Textures :",IDC_STATIC,16,221,70,8
+    LTEXT           "Number of Texels :",IDC_STATIC,140,220,62,8
+    LTEXT           "999999999999999",IDC_UTIL_NUM_TEXTURES,89,221,43,8
+    LTEXT           "99999999999",IDC_UTIL_NUM_TEXELS,205,220,66,8
+    LTEXT           "Size of File :",IDC_STATIC,16,234,40,8
+    LTEXT           "999999999999999",IDC_UTIL_SIZE_FILE,60,234,43,8
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 247, 121
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Ptex for 3dsmax"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,4,0,239,61
+    LTEXT           "Ptex for 3dsmax [ Alpha 03 ]\nDecember 18, 2010\n\nDeveloped by Diego A. Castaño\nAll Rights Reserved © 2001-2009\nMankua Software Inc.",IDC_STATIC,110,7,111,49
+    CONTROL         107,IDC_ABOUT_MANKUA,"Static",SS_BITMAP | SS_NOTIFY,8,8,97,49,WS_EX_CLIENTEDGE
+    LTEXT           "PTEX SOFTWARE\nCopyright 2009 Disney Enterprises, Inc. \nAll rights reserved",IDC_STATIC,110,71,132,26
+    GROUPBOX        "",IDC_STATIC,4,62,239,55
+    PUSHBUTTON      "Ptex License",IDC_ABOUT_PTEX_LICENSE,109,98,75,14,BS_FLAT
+    CONTROL         110,IDC_ABOUT_PTEX,"Static",SS_BITMAP | SS_NOTIFY,8,70,97,44,WS_EX_CLIENTEDGE
+END
+
+IDD_PTEX_LICENSE DIALOGEX 0, 0, 290, 248
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Ptex License"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "PTEX SOFTWARE\nCopyright 2009 Disney Enterprises, Inc.  All rights reserved\n\nRedistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:",IDC_STATIC,8,8,274,43
+    LTEXT           "Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.",IDC_STATIC,24,54,249,17
+    LTEXT           "Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.",IDC_STATIC,24,77,252,26
+    LTEXT           "The names ""Disney"", ""Walt Disney Pictures"", ""Walt Disney Animation Studios"" or the names of its contributors may NOT be used to endorse or promote products derived from this software without specific prior written permission from Walt Disney Pictures.",IDC_STATIC,24,107,252,34
+    LTEXT           "Disclaimer: THIS SOFTWARE IS PROVIDED BY WALT DISNEY PICTURES AND\nCONTRIBUTORS ""AS IS"" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,\nBUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS",IDC_STATIC,8,143,274,25
+    LTEXT           "*",IDC_STATIC,13,79,8,8
+    LTEXT           "*",IDC_STATIC,13,56,8,8
+    LTEXT           "*",IDC_STATIC,13,109,8,8
+    LTEXT           "FOR A PARTICULAR PURPOSE, NONINFRINGEMENT AND TITLE ARE DISCLAIMED.\nIN NO EVENT SHALL WALT DISNEY PICTURES, THE COPYRIGHT HOLDER OR\nCONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,",IDC_STATIC,8,167,274,25
+    LTEXT           "THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\nOF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.",IDC_STATIC,8,215,274,25
+    LTEXT           "EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,\nPROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR\nPROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND BASED ON ANY",IDC_STATIC,8,191,274,25
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_TEXTURE, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 213
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 82
+    END
+
+    IDD_MODIFIER, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 104
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 67
+    END
+
+    IDD_UTILITY, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 106
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 328
+    END
+
+    IDD_PTEX_FILE_INFO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 274
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 266
+    END
+
+    IDD_ABOUT, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 243
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 117
+    END
+
+    IDD_PTEX_LICENSE, DIALOG
+    BEGIN
+        LEFTMARGIN, 8
+        RIGHTMARGIN, 282
+        TOPMARGIN, 8
+        BOTTOMMARGIN, 240
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_MANKUA_WHITE        BITMAP                  "C:\\WorkspaceSVN\\Mankua\\Logos\\logo_mankua_white_h76.bmp"
+IDB_PTEX                BITMAP                  "Ptex.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_LIBDESCRIPTION      "PtexPlugIns"
+    IDS_CATEGORY            "Mankua"
+    IDS_TEXTURE_OUTPUT      "Output"
+    IDS_PARAMS              "Parameters"
+    IDS_SPIN                "Spin"
+    IDS_UTILITY_NAME        "Ptex Tools"
+    IDS_COORDS              "Coordinates"
+    IDS_MODIFIER_NAME       "Ptex Auto UV"
+    IDS_MULTISEL            "Multiple Selected"
+    IDS_NONESEL             "None Selected"
+    IDS_TEXTURE_NAME        "Ptex Color"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

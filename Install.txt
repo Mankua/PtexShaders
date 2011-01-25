@@ -1,0 +1,43 @@
+INSTALL
+
+1. Link mental ray shader Ptex.dll using Ptex.mi
+2. Add Post-Event commands
+
+-------------------------------------------------------------------------------------------------------
+
+1. Link mental ray shader Ptex.dll using Ptex.mi
+
+Open the file 
+C:\Program Files (x86)\Autodesk\3ds Max 2010\mentalray\shaders_3rdparty\3rdparty.mi
+
+Add these two lines after the last link:
+
+	link "Ptex.dll"
+	mi "Ptex.mi"
+	
+-------------------------------------------------------------------------------------------------------
+
+2. Add Post-Event commands 
+
+Paste these commands in the Post-Build Event section of each project to copy-paste
+the plug-ins and shaders from the Bin output dir to the plugins directory:
+
+Project > Properties > Build Events > Post-Build Event
+
+Project: PtexMax2010 32 Bits Release Mode
+
+copy ..\Bin\Release\Max2010\Ptex.dlt "C:\Program Files (x86)\Autodesk\3ds Max 2010\plugins"
+
+Project: PtexMentalRayMax2010 32 Bits Release Mode
+
+copy "..\Bin\Release\Max2010\Ptex.dll" "C:\Program Files (x86)\Autodesk\3ds Max 2010\mentalray\shaders_3rdparty\shaders"
+copy "..\..\code\MentalRay\Ptex.mi" "C:\Program Files (x86)\Autodesk\3ds Max 2010\mentalray\shaders_3rdparty\include"
+
+Project: PtexMax2010 32 Bits Debug Mode
+
+NOTE: If anyone knows a way to use a CMake command to add these lines to Post-Build Event please
+send me a message to diego at mankua dot com.
+
+#INSTALL ( TARGETS "Ptex.dlt" DESTINATION "C:/Program Files (x86)/Autodesk/3ds Max 2010/plugins" )
+
+-------------------------------------------------------------------------------------------------------

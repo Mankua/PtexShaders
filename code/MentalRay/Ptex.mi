@@ -1,0 +1,21 @@
+min version "2.1.00"
+max version "3.8.99"
+
+declare shader
+	"PtexColor" (
+		string "ptex_file_path",
+		integer "uv_index",		
+		integer "filter_type",
+		scalar "filter_size",
+	)
+	version 1
+	apply texture
+
+    gui "gui_PtexColor" {
+	control "Global" "Global" (
+		"uiName" "PtexColor",
+		"category" "Texture",
+        "hidden"
+	)
+    }
+end declare
