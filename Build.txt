@@ -14,13 +14,16 @@ Open CMake
 Set the source code folder
 Set the build folder using a last name:
 
-Source : C:/SceneEngine/Git/PtexShaders/code
-Build  : C:/SceneEngine/Git/PtexShaders/build_msvc90_32
+Source : C:/Projects/Ptex/Git/PtexShaders/code
+Build  : C:/Projects/Ptex/Git/PtexShaders/build_msvc90_32
 
 msvc90 is Visual Studio 9.0 aka 2008
 32 is 32 Bits
 
 Configure and Generate.
+
+Read Install.txt for information about how to copy the plug-ins to 3ds Max and how
+to link the mental ray shader.
 
 Note:
 

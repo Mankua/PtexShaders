@@ -600,13 +600,19 @@ AColor TexturePtex::EvalColor(ShadeContext& sc)
 		}
 
 		LeaveCriticalSection( &m_critical_section );
+
+		// And if the second thread was stopped by the second if, make sure to grab a filter...
+
+		std::map< unsigned int, PtexFilter * >::iterator it3 = m_ptex_filters.find( thread_id );
+
+		ptex_filter = it3->second;
 	}
 	else
 	{
 		ptex_filter = it->second;
 	}
 
-	if ( ptex_filter == 0 ) return black;
+	DbgAssert( ptex_filter );
 
 	float result[4];
 

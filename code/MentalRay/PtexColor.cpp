@@ -8,45 +8,6 @@
 #include <map>
 #include <string>
 
-#define FNAME "c:\\Debug\\PtexMentalRay.txt"
-
-void Debug( int a, int b )
-{
-	FILE *file = fopen( FNAME, "w" );
-	fclose(file);
-}
-
-void Debug( char * str )
-{
-	FILE *file = fopen( FNAME, "a+" );
-	fprintf(file, "%s",str);
-	fclose(file);
-}
-
-void Debug( char * str, char * v, bool nl = true )
-{
-	FILE * file = fopen( FNAME, "a+" );
-	fprintf( file, "%s%s", str, v );
-	if ( nl ) fprintf( file, "\n" );
-	fclose( file );
-}
-
-void Debug( char * str, int v, bool nl = true )
-{
-	FILE * file = fopen( FNAME, "a+" );
-	fprintf( file, "%s%d", str, v );
-	if ( nl ) fprintf( file, "\n" );
-	fclose( file );
-}
-
-void Debug( char * str, float v, bool nl = true )
-{
-	FILE * file = fopen( FNAME, "a+" );
-	fprintf( file, "%s%f", str, v );
-	if ( nl ) fprintf( file, "\n" );
-	fclose( file );
-}
-
 char* miaux_tag_to_string( miTag tag, char *default_value )
 {
 	char *result = default_value;
@@ -75,9 +36,6 @@ extern "C" DLLEXPORT int PtexColor_version(void){ return 1; }
 
 extern "C" DLLEXPORT void PtexColor_init( miState * state, PtexColor_params * in_params, miBoolean * inst_req )
 {
-	Debug( 0, 0 );
-	Debug( "PtexColor_init\n" );
-
 	if ( !in_params )
 	{
 		*inst_req = miFALSE;
@@ -89,8 +47,6 @@ extern "C" DLLEXPORT void PtexColor_init( miState * state, PtexColor_params * in
 extern "C" DLLEXPORT void PtexColor_exit( miState * state, PtexColor_params * in_params )
 {
 	mi_delete_lock( &mr_lock );
-
-	Debug( "PtexColor_exit\n" );
 }
 
 extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state, PtexColor_params * in_params )
@@ -123,8 +79,6 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 
 		if ( it_data_2 == ptex_datas.end() )
 		{
-			Debug( "PtexColor : Create PtexColorData : thread : ", thread_id );
-
 			Ptex::String error;
 
 			PtexCache * ptex_cache = PtexCache::create( 0, 1024 * 1024 );
@@ -155,11 +109,6 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 		ptex_color_data = it_data->second;
 	}
 
-	if ( ptex_color_data == 0 )
-	{
-		Debug( "PtexColor : ERROR  : ptex_color_data == 0 : thread_id : ", thread_id );
-	}
-
 	std::map< int, PtexFilter * >::iterator it_filter = ptex_color_data->ptex_filters.find( thread_id );
 
 	if ( it_filter == ptex_color_data->ptex_filters.end() )
@@ -174,8 +123,6 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 
 		if ( it_filter_2 == ptex_color_data->ptex_filters.end() )
 		{
-			Debug( "PtexColor : Create PtexFilter : thread : ", thread_id );
-
 			PtexFilter::FilterType filter_type = PtexFilter::f_point;
 
 			switch ( filter_id )
@@ -206,14 +153,6 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 			float du = deriv.x;
 			float dv = deriv.y;
 			float dw = deriv.z;
-
-			Debug( "PtexColor : uv_index : ", uv_index );
-			Debug( "PtexColor : u : ", u );
-			Debug( "PtexColor : v : ", v );
-			Debug( "PtexColor : w : ", w );
-			Debug( "PtexColor : du : ", du );
-			Debug( "PtexColor : dv : ", dv );
-			Debug( "PtexColor : dw : ", dw );
 		}
 
 		mi_unlock( mr_lock );
