@@ -1,7 +1,7 @@
 # Top-Level CmakeLists.txt
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-PROJECT( PtexMax )
+PROJECT( PtexShaders )
 
 SET ( CMAKE_CONFIGURATION_TYPES "Debug;Release"  CACHE STRING "" FORCE)
 

@@ -652,9 +652,27 @@ AColor TexturePtex::EvalColor(ShadeContext& sc)
 	
 	ptex_filter->eval( result, 0, m_ptex_num_channels, face_id, u, v, du, 0, 0, dv );
 
-	AColor color( result[ 0 ], result[ 1 ], result[ 2 ], 1.0f );
-
-	if ( m_ptex_num_channels == 4 ) color.a = result[ 3 ];
+	AColor color;
+	
+	if ( m_ptex_num_channels == 1 )
+	{
+		color.r = color.g = color.b = result[ 0 ];
+		color.a = 1.0f;
+	}
+	else if ( m_ptex_num_channels == 3 )
+	{
+		color.r = result[ 0 ];
+		color.g = result[ 1 ];
+		color.b = result[ 2 ];
+		color.a = 1.0f;
+	}
+	else if ( m_ptex_num_channels == 4 )
+	{
+		color.r = result[ 0 ];
+		color.g = result[ 1 ];
+		color.b = result[ 2 ];
+		color.a = result[ 3 ];
+	}
 
 	color = m_texture_output->Filter( color );
 

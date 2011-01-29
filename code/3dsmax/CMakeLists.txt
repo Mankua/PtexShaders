@@ -39,6 +39,8 @@ SET ( MAXSDK11_LIBRARY_DIR "c:/Libraries/maxsdk/11/lib" )
 SET ( MAXSDK12_LIBRARY_DIR "c:/Libraries/maxsdk/12/lib" )
 SET ( MAXSDK13_LIBRARY_DIR "c:/Libraries/maxsdk/13/lib" )
 
+SET ( PROGRAM_FILES "c:\\Program Files (x86)" )
+
 IF ( CMAKE_CL_64 ) # 64 BITS
 
 	SET ( MAXSDK9_LIBRARY_DIR  "c:/Libraries/maxsdk/9/x64/lib" )
@@ -46,6 +48,8 @@ IF ( CMAKE_CL_64 ) # 64 BITS
 	SET ( MAXSDK11_LIBRARY_DIR "c:/Libraries/maxsdk/11/x64/lib" )
 	SET ( MAXSDK12_LIBRARY_DIR "c:/Libraries/maxsdk/12/x64/lib" )
 	SET ( MAXSDK13_LIBRARY_DIR "c:/Libraries/maxsdk/13/x64/lib" )
+	
+	SET ( PROGRAM_FILES "c:\\Program Files" )
 	
 ENDIF ()
 
@@ -110,8 +114,6 @@ IF ( MSVC80 )
 	SET ( LOCAL_WARNING_FLAGS /W3 )
 	SET ( LOCAL_RTTI_FLAGS /GR )
 	
-	ADD_CUSTOM_COMMAND( TARGET "ptex" POST_BUILD COMMAND "copy this" )
-
 	#######################################################
 	# P L U G I N   F O R   3 D S M A X   2 0 0 8         #
 	#######################################################
@@ -128,9 +130,6 @@ IF ( MSVC80 )
 
 	SET ( LOCAL_WARNING_FLAGS /W3 )
 	SET ( LOCAL_RTTI_FLAGS /GR )
-		
-	# copy "C:\WorkspaceSVN\MaxTools\Plugins\Ptex\build_msvc90_32\Bin\Debug\Max2008\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2008\plugins"
-	# copy "C:\WorkspaceSVN\MaxTools\Plugins\Ptex\build_msvc90_32\Bin\Release\Max2008\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2008\plugins"
 	
 ENDIF ( MSVC80 )
 
@@ -154,13 +153,7 @@ IF ( MSVC90 )
 	SET ( LOCAL_WARNING_FLAGS /W3 )
 	SET ( LOCAL_RTTI_FLAGS /GR )
 	
-	# 32 Bits
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2010\plugins"
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2010\plugins"
-	
-	# 64 Bits
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files\Autodesk\3ds Max 2010\plugins"
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files\Autodesk\3ds Max 2010\plugins"
+	ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAX_12} POST_BUILD COMMAND copy ..\\Bin\\$(ConfigurationName)\\Max2010\\Ptex.dlt "${PROGRAM_FILES}\\Autodesk\\3ds Max 2010\\plugins" )
 	
 	#######################################################
 	# P L U G I N   F O R   3 D S M A X   2 0 1 1         #
@@ -180,14 +173,6 @@ IF ( MSVC90 )
 	SET ( LOCAL_WARNING_FLAGS /W3 )
 	SET ( LOCAL_RTTI_FLAGS /GR )
 
-	# 32 Bits
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2011\plugins"
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files (x86)\Autodesk\3ds Max 2011\plugins"
-	
-	# 64 Bits
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files\Autodesk\3ds Max 2011\plugins"
-	# copy "..\Bin\Release\Max2010\Ptex.dlt" "C:\Program Files\Autodesk\3ds Max 2011\plugins"
-
-	#INSTALL ( TARGETS "Ptex.dlt" DESTINATION "C:/Program Files (x86)/Autodesk/3ds Max 2010/plugins" )
+	ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAX_13} POST_BUILD COMMAND copy ..\\Bin\\$(ConfigurationName)\\Max2011\\Ptex.dlt "${PROGRAM_FILES}\\Autodesk\\3ds Max 2011\\plugins" )
   
 ENDIF ( MSVC90 )
