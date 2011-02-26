@@ -50,7 +50,6 @@ distribution.
 #include <mentalray\imrAdvancedTranslation.h>
 #include <mentalray\mentalrayInMax.h>
 
-
 class PtexCache;
 class PtexTexture;
 class PtexFilter;
