@@ -135,13 +135,16 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 		MDataHandle ptexFilenameHnd = block.inputValue( aPtexFilename );
 		MString ptexFilenameStr = ptexFilenameHnd.asString();
 
+		int len;
+		const char * ptexFilename = ptexFilenameStr.asChar( len );
+
 		Ptex::String error;
 
 		const char * ptex_filename = ptexFilenameStr.asChar();
 
 		m_ptex_cache = PtexCache::create( 0, 1024 * 1024 );
 
-		m_ptex_texture = m_ptex_cache->get( "c:\\Temp\\StripesScenes\\Hand.ptx", error );
+		m_ptex_texture = m_ptex_cache->get( ptexFilename, error );
 
 		if ( m_ptex_texture == 0 )
 		{

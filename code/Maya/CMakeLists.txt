@@ -1,5 +1,5 @@
-SET ( PROJECT_NAME_MAYA_2010 "PtexMaya2010" )
-SET ( PROJECT_NAME_MAYA_2011 "PtexMaya2011" )
+SET ( PROJECT_NAME_MAYA_2010 "Maya2010" )
+SET ( PROJECT_NAME_MAYA_2011 "Maya2011" )
 
 SET ( MAYA_2010_HEADERS_DIR "C:/Program Files (x86)/Autodesk/Maya2010/include" )
 SET ( MAYA_2010_LIBRARY_DIR "C:/Program Files (x86)/Autodesk/Maya2010/lib" )
@@ -23,51 +23,24 @@ ENDIF ()
 
 SET ( PTEX_HEADERS_DIR "${CMAKE_SOURCE_DIR}/zlib" "${CMAKE_SOURCE_DIR}/PtexLib" )
 
-SET ( SOURCE_FILES "CmpMeshModifierCmd.cpp" "CmpMeshModifierNode.cpp" "PtexUVCmd.cpp" "PtexUVNode.cpp" "PtexColorNode.cpp" "PluginMain.cpp" )
-SET ( HEADER_FILES "CmpMeshModifierCmd.h"   "CmpMeshModifierNode.h"   "PtexUVCmd.h"   "PtexUVNode.h"   "PtexColorNode.h"  )
+SET ( SOURCE_FILES "../CmpMeshModifierCmd.cpp" 
+                   "../CmpMeshModifierNode.cpp" 
+				   "../PtexUVCmd.cpp" 
+				   "../PtexUVNode.cpp" 
+				   "../PtexColorNode.cpp" 
+				   "../PluginMain.cpp"
+)
+
+SET ( HEADER_FILES "../CmpMeshModifierCmd.h"   
+                   "../CmpMeshModifierNode.h"   
+				   "../PtexUVCmd.h"   
+				   "../PtexUVNode.h"   
+				   "../PtexColorNode.h"
+)
 
 SET( MAYA_LIBRARIES "Foundation.lib" "OpenMaya.lib" "OpenMayaAnim.lib" "OpenMayaRender.lib" )
 
 SET ( CUSTOM_DEFINITIONS "_AFXDLL,_MBCS,NT_PLUGIN,REQUIRE_IOSTREAM" )
 
-#######################################################
-# P L U G I N   F O R   M A Y A   2 0 1 0             #
-#######################################################
-
-#INCLUDE_DIRECTORIES ( ${PUBLIC_INCLUDE_DIRS} ${MAYA_2010_HEADERS_DIR} )
-#LINK_DIRECTORIES ( ${PUBLIC_LIBRARY_DIRS} ${MAYA_2010_LIBRARY_DIR} )
-
-#ADD_LIBRARY ( ${PROJECT_NAME_MAYA_2010} SHARED ${SOURCE_FILES} ${HEADER_FILES} )
-#TARGET_LINK_LIBRARIES( ${PROJECT_NAME_MAYA_2010} ${MAYA_LIBRARIES} )
-
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES COMPILE_DEFINITIONS ${CUSTOM_DEFINITIONS} )
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES OUTPUT_NAME "/2010/PtexUV" )
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES SUFFIX ".mll" )
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES CLEAN_DIRECT_OUTPUT 1 )
-
-#SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES LINK_FLAGS "/export:initializePlugin /export:uninitializePlugin" )
-
-#ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2010} POST_BUILD COMMAND copy .\\$(ConfigurationName)\\2010\\PtexUV.mll "${PROGRAM_FILES}\\Autodesk\\Maya2010\\bin\\plug-ins" )
-
-#######################################################
-# P L U G I N   F O R   M A Y A   2 0 1 1             #
-#######################################################
-
-INCLUDE_DIRECTORIES ( ${PUBLIC_INCLUDE_DIRS} ${MAYA_2011_HEADERS_DIR} ${PTEX_HEADERS_DIR} )
-LINK_DIRECTORIES ( ${PUBLIC_LIBRARY_DIRS} ${MAYA_2011_LIBRARY_DIR} )
-
-ADD_LIBRARY ( ${PROJECT_NAME_MAYA_2011} SHARED ${SOURCE_FILES} ${HEADER_FILES} )
-TARGET_LINK_LIBRARIES( ${PROJECT_NAME_MAYA_2011} ${MAYA_LIBRARIES} ${PTEX_NAME_LIB} ${ZLIB_NAME_LIB} )
-
-SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2011} PROPERTIES COMPILE_DEFINITIONS ${CUSTOM_DEFINITIONS} )
-SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2011} PROPERTIES OUTPUT_NAME "/Maya2011/Ptex" )
-SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2011} PROPERTIES SUFFIX ".mll" )
-SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2011} PROPERTIES CLEAN_DIRECT_OUTPUT 1 )
-
-SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2011} PROPERTIES LINK_FLAGS "/export:initializePlugin /export:uninitializePlugin" )
-
-ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2011} POST_BUILD COMMAND copy ..\\Bin\\$(ConfigurationName)\\Maya2011\\Ptex.mll "${PROGRAM_FILES}\\Autodesk\\Maya2011\\bin\\plug-ins" )	
-ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2011} POST_BUILD COMMAND copy ..\\..\\code\\Maya\\AEPtexColorTemplate.mel "${PROGRAM_FILES}\\Autodesk\\Maya2011\\scripts\\AETemplates" )	
-
-SET ( LOCAL_WARNING_FLAGS /W3 )
-SET ( LOCAL_RTTI_FLAGS /GR )
+ADD_SUBDIRECTORY( Maya2010 )
+ADD_SUBDIRECTORY( Maya2011 )

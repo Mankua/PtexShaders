@@ -7,26 +7,18 @@
 // or hard copy form.
 // ==========================================================================
 
-global proc AEPtexTextureTemplate( string $nodeName )
+global proc AEptexColorTemplate( string $nodeName )
 {
 	AEswatchDisplay $nodeName;
 	editorTemplate -beginScrollLayout;
 
 	editorTemplate -beginLayout "Ptex Texture Attributes" -collapse 0;
-		editorTemplate -addControl "brickColor";
-		editorTemplate -addControl "jointColor";
-		editorTemplate -addControl "blurFactor";
+		editorTemplate -addControl "ptexFilename";
 	editorTemplate -endLayout;
 
-	editorTemplate -beginLayout "UV Coordinates" -collapse 1;
-		editorTemplate -addControl "uvCoord";
-	editorTemplate -endLayout;
-
-	// include/call base class/node attributes
-	AEdependNodeTemplate $nodeName;
+	AEtexture2dCommon $nodeName;
 
 	editorTemplate -addExtraControls;
 	editorTemplate -endScrollLayout;
 }
-
 
