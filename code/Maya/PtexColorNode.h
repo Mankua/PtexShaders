@@ -33,9 +33,12 @@ public:
 private:
 
 	// Input attributes
-	static MObject aPtexFilename;
-	static MObject aUVCoord;
+	static MObject aFileName;
+	static MObject aFilterType;
 	static MObject aFilterSize;
+
+	static MObject aUVPos;
+	static MObject aUVSize;
 
 	// Output attributes
 	static MObject aOutColor;

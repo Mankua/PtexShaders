@@ -16,7 +16,7 @@
 #include <maya/MFnStringData.h>
 #include <maya/MImage.h>
 
-MTypeId PtexUVNode::id( 0x00338 );
+MTypeId PtexUVNode::id( 0x00116A41 );
 
 MStatus PtexUVNode::compute( const MPlug &plug, MDataBlock &data )
 {

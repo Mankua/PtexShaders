@@ -19,8 +19,8 @@ IF ( MSVC90 )
 	SET ( LOCAL_WARNING_FLAGS /W3 )
 	SET ( LOCAL_RTTI_FLAGS /GR )
 	
-	ADD_CUSTOM_COMMAND( TARGET ${MENTAL_RAY_MAYA_2011} POST_BUILD COMMAND copy ..\\..\\Bin\\$(ConfigurationName)\\Maya2011\\Ptex.dll "${PROGRAM_FILES}\\Autodesk\\Maya2010\\mentalray\\lib" )
+	ADD_CUSTOM_COMMAND( TARGET ${MENTAL_RAY_MAYA_2011} POST_BUILD COMMAND copy ..\\..\\Bin\\$(ConfigurationName)\\Maya2011\\Ptex.dll "${PROGRAM_FILES}\\Autodesk\\Maya2011\\mentalray\\lib" )
 	
-	ADD_CUSTOM_COMMAND( TARGET ${MENTAL_RAY_MAYA_2011} POST_BUILD COMMAND copy ..\\..\\..\\code\\MentalRay\\Ptex.mi "${PROGRAM_FILES}\\Autodesk\\Maya2010\\mentalray\\include" )
+	ADD_CUSTOM_COMMAND( TARGET ${MENTAL_RAY_MAYA_2011} POST_BUILD COMMAND copy ..\\..\\..\\code\\MentalRay\\Ptex.mi "${PROGRAM_FILES}\\Autodesk\\Maya2011\\mentalray\\include" )
 		
 ENDIF ( MSVC90 )

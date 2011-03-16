@@ -17,7 +17,7 @@ SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES CLEAN_DIRECT_OUTPUT 
 SET_TARGET_PROPERTIES( ${PROJECT_NAME_MAYA_2010} PROPERTIES LINK_FLAGS "/export:initializePlugin /export:uninitializePlugin" )
 
 ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2010} POST_BUILD COMMAND copy ..\\..\\Bin\\$(ConfigurationName)\\Maya2010\\Ptex.mll "${PROGRAM_FILES}\\Autodesk\\Maya2010\\bin\\plug-ins" )	
-ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2010} POST_BUILD COMMAND copy ..\\..\\..\\code\\Maya\\AEPtexColorTemplate.mel "${PROGRAM_FILES}\\Autodesk\\Maya2010\\scripts\\AETemplates" )	
+ADD_CUSTOM_COMMAND( TARGET ${PROJECT_NAME_MAYA_2010} POST_BUILD COMMAND copy ..\\..\\..\\code\\Maya\\AEptexColorTextureTemplate.mel "${PROGRAM_FILES}\\Autodesk\\Maya2010\\scripts\\AETemplates" )	
 
 SET ( LOCAL_WARNING_FLAGS /W3 )
 SET ( LOCAL_RTTI_FLAGS /GR )

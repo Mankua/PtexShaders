@@ -24,12 +24,15 @@
 #include "Ptexture.h"
 
 // static data
-MTypeId PtexColorNode::id( 0x8100d );
+MTypeId PtexColorNode::id( 0x00116A40 );
 
 // Attributes
-MObject PtexColorNode::aPtexFilename;
-MObject PtexColorNode::aUVCoord;
+MObject PtexColorNode::aFileName;
+MObject PtexColorNode::aFilterType;
 MObject PtexColorNode::aFilterSize;
+
+MObject PtexColorNode::aUVPos;
+MObject PtexColorNode::aUVSize;
 
 MObject PtexColorNode::aOutColor;
 
@@ -82,25 +85,31 @@ void * PtexColorNode::creator()
 //
 MStatus PtexColorNode::initialize()
 {
-    MFnNumericAttribute nAttr; 
-
-    // Input attributes
-
 	MFnTypedAttribute tAttr;
-	aPtexFilename = tAttr.create( "ptexFilename", "ptex", MFnData::kString );
-	MAKE_INPUT(tAttr);
+	MFnNumericAttribute nAttr; 
+
+   // Input attributes
+
+	aFileName = tAttr.create( "fileName", "f", MFnData::kString );
+	MAKE_INPUT( tAttr );
+
+	aFilterType = nAttr.create( "filterType", "t", MFnNumericData::kByte, 0 );
+	MAKE_INPUT( nAttr );
+
+	aFilterSize = nAttr.create( "filterSize", "s", MFnNumericData::kFloat, 1.0 );
+	MAKE_INPUT( nAttr );
 
 	// Implicit shading network attributes
 
     MObject child1 = nAttr.create( "uCoord", "u", MFnNumericData::kFloat);
     MObject child2 = nAttr.create( "vCoord", "v", MFnNumericData::kFloat);
-    aUVCoord = nAttr.create( "uvCoord", "uv", child1, child2);
+    aUVPos = nAttr.create( "uvCoord", "uv", child1, child2);
     MAKE_INPUT(nAttr);
     CHECK_MSTATUS( nAttr.setHidden(true) );
 
     child1 = nAttr.create( "uvFilterSizeX", "fsx", MFnNumericData::kFloat);
     child2 = nAttr.create( "uvFilterSizeY", "fsy", MFnNumericData::kFloat);
-    aFilterSize = nAttr.create("uvFilterSize", "fs", child1, child2);
+    aUVSize = nAttr.create( "uvFilterSize", "fs", child1, child2 );
     MAKE_INPUT(nAttr);
     CHECK_MSTATUS( nAttr.setHidden(true) );
 
@@ -109,16 +118,20 @@ MStatus PtexColorNode::initialize()
 	MAKE_OUTPUT(nAttr);
 
 	// Add attributes to the node database.
-    CHECK_MSTATUS( addAttribute(aPtexFilename) );
-    CHECK_MSTATUS( addAttribute(aFilterSize) );
-    CHECK_MSTATUS( addAttribute(aUVCoord) );
+    CHECK_MSTATUS( addAttribute(aFileName) );
+	CHECK_MSTATUS( addAttribute(aFilterType) );
+	CHECK_MSTATUS( addAttribute(aFilterSize) );
+    CHECK_MSTATUS( addAttribute(aUVPos) );
+    CHECK_MSTATUS( addAttribute(aUVSize) );
 
     CHECK_MSTATUS( addAttribute(aOutColor) );
 
 	// All input affect the output color
-    CHECK_MSTATUS( attributeAffects(aPtexFilename,  aOutColor) );
-    CHECK_MSTATUS( attributeAffects(aFilterSize,	aOutColor) );
-    CHECK_MSTATUS( attributeAffects(aUVCoord,		aOutColor) );
+    CHECK_MSTATUS( attributeAffects( aFileName,   aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aFilterSize, aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aFilterType, aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aUVPos,      aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aUVSize,     aOutColor ) );
 
     return MS::kSuccess;
 }
@@ -132,15 +145,17 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 
 	if ( m_ptex_texture == 0 )
 	{
-		MDataHandle ptexFilenameHnd = block.inputValue( aPtexFilename );
-		MString ptexFilenameStr = ptexFilenameHnd.asString();
+		MDataHandle filenameHnd = block.inputValue( aFileName );
+		MDataHandle filterTypeHnd = block.inputValue( aFilterType );
+		MDataHandle filterSizeHnd = block.inputValue( aFilterSize );
 
-		int len;
-		const char * ptexFilename = ptexFilenameStr.asChar( len );
+		MString filenameStr = filenameHnd.asString();
+		int filterTypeValue = filterSizeHnd.asInt();
+		double filterSizeValue = filterSizeHnd.asDouble();
+
+		const char * ptexFilename = filenameStr.asChar();
 
 		Ptex::String error;
-
-		const char * ptex_filename = ptexFilenameStr.asChar();
 
 		m_ptex_cache = PtexCache::create( 0, 1024 * 1024 );
 
@@ -165,7 +180,7 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 		stop_here = true;
 	}
 
-    float2 & uv = block.inputValue( aUVCoord ).asFloat2();
+    float2 & uv = block.inputValue( aUVPos ).asFloat2();
 
 	unsigned int thread_id = (unsigned int)GetCurrentThreadId();
 

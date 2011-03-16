@@ -7,13 +7,15 @@
 // or hard copy form.
 // ==========================================================================
 
-global proc AEptexColorTemplate( string $nodeName )
+global proc AEptexColorTextureTemplate( string $nodeName )
 {
 	AEswatchDisplay $nodeName;
 	editorTemplate -beginScrollLayout;
 
 	editorTemplate -beginLayout "Ptex Texture Attributes" -collapse 0;
-		editorTemplate -addControl "ptexFilename";
+		editorTemplate -addControl "fileName";
+		editorTemplate -addControl "filterType";
+		editorTemplate -addControl "filterSize";
 	editorTemplate -endLayout;
 
 	AEtexture2dCommon $nodeName;
