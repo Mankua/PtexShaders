@@ -82,6 +82,7 @@ public:
 		FILTER_TYPE,
 		BUMP_AMOUNT,
 		OUTPUT_REF,
+		PREMULTIPLIED_ALPHA,
 	};
 
 	// Parameter block
@@ -95,6 +96,7 @@ public:
 	PtexCache * m_ptex_cache;
 	PtexTexture * m_ptex_texture;
 	int m_ptex_num_channels;
+	bool m_premultiplied_alpha;
 
 	std::map< unsigned int, PtexFilter * > m_ptex_filters;
 

@@ -154,6 +154,11 @@ static ParamBlockDesc2 texture_ptex_param_blk ( TexturePtex::PBLOCK, _T("params"
 		p_refno,		TexturePtex::TEXTURE_OUTPUT,
 		end,
 
+	TexturePtex::PREMULTIPLIED_ALPHA, 	_T("premultipliedAlpha"), 	TYPE_BOOL, 	0, 				IDS_SPIN, 
+		p_default, 		FALSE, 
+		p_ui,			TYPE_SINGLECHEKBOX,		IDC_TEX_PREMULTIPLIED_ALPHA,
+		end,
+
 	end
 );
 
@@ -553,6 +558,7 @@ void TexturePtex::Update(TimeValue t, Interval& valid)
 	m_ptex_file_path = m_pblock->GetStr( PTEX_FILE );
 	m_filter_id = m_pblock->GetInt( FILTER_TYPE );
 	m_filter_size = m_pblock->GetFloat( FILTER_SIZE );
+	m_premultiplied_alpha = m_pblock->GetInt( PREMULTIPLIED_ALPHA ) > 0;
 }
 
 int TexturePtex::RenderBegin(TimeValue t, ULONG flags) 
@@ -672,6 +678,13 @@ AColor TexturePtex::EvalColor(ShadeContext& sc)
 		color.g = result[ 1 ];
 		color.b = result[ 2 ];
 		color.a = result[ 3 ];
+	}
+
+	if ( m_premultiplied_alpha == false )
+	{
+		color.r *= color.a;
+		color.g *= color.a;
+		color.b *= color.a;
 	}
 
 	color = m_texture_output->Filter( color );
