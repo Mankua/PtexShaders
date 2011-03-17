@@ -7,15 +7,137 @@
 // or hard copy form.
 // ==========================================================================
 
+global proc AEptexColorTextureBrowser( string $fileAttribute )
+{
+    string  $workspace = `workspace -q -fn`;
+    setWorkingDirectory $workspace "image" "sourceImages";
+		
+	string $ptxFilter = "*.ptx";
+	string $result[] = `fileDialog2 -fileFilter $ptxFilter -fileMode 1 -dialogStyle 2 -caption "Open Ptex File"`;
+		
+	setAttr $fileAttribute -type "string" $result[0];
+
+	string $currentDir = `workspace -q -dir`;
+    retainWorkingDirectory ($currentDir);
+
+	// Extract the name of the node from the node.attribute name
+	//
+	string $tokenArray[];
+	tokenize($fileAttribute, ".", $tokenArray);
+
+	string $fileNode = $tokenArray[0];
+}
+
+global proc AEptexColorTextureNameReplace (string $fileAttribute)
+{
+	print ( "AEptexColorTextureNameReplace fileAttribute:\n" );
+	print ( $fileAttribute );
+	print ( "\n" );
+	
+	connectControl -fileName textureNameField $fileAttribute;
+
+    button -e -c ( "AEptexColorTextureBrowser \"" + $fileAttribute + "\"" ) browser;
+}
+
+global proc AEptexColorTextureNameNew (string $fileAttribute)
+{
+	setUITemplate -pst attributeEditorTemplate;
+	rowLayout -nc 3 textureNameLayout;
+		text -label "Ptex file:";
+		textField textureNameField;
+		symbolButton -image "navButtonBrowse.png" browser;
+	setParent ..;
+	setUITemplate -ppt;
+	
+	print ( "AEptexColorTextureNameNew fileAttribute:\n" );
+	print ( $fileAttribute );
+	print ( "\n" );	
+	
+    AEptexColorTextureNameReplace $fileAttribute;
+}
+
+global proc AEptexColorTextureTypeNew( string $attrName )
+{
+	print ( "AEptexColorTextureTypeNew attrName:\n" );
+	print ( $attrName );
+	print ( "\n" );
+	
+	string $nodeName[];
+	tokenize( $attrName, ".", $nodeName );
+
+	print ( "AEptexColorTextureTypeNew nodeName:\n" );
+	print ( $nodeName[0] );
+	print ( "\n" );
+	
+	// This hack ensures that the standard locator has the
+	// extra attribute; else, this enhancement will not work!
+	//assertAttribute( $attrName );
+
+	// Push the Attribute Editor UITemplate 
+	setUITemplate -pst attributeEditorTemplate; // attributeEditorPresetsTemplate;
+
+	rowLayout -nc 2 -columnAlign2 "right" "left" filterTypeLayout;
+	
+	text -label "Filter Type:";
+	
+	// Add the optionMenu enumeration group.
+	// This will be connected to the our specified attribute.
+	attrEnumOptionMenuGrp
+	-columnAlign 1 "left"
+	-at $attrName
+	-ei 0 "Point"
+	-ei 1 "Bilinear"
+	-ei 2 "This"
+	-ei 3 "And"
+	-ei 4 "Other"
+	locatorEnumOptionMenu;
+
+	// Pop to restore the UITemplate 
+	setUITemplate -ppt;
+}
+
+global proc AEptexColorTextureTypeReplace( string $attrName )
+{
+	print ( "AEptexColorTextureTypeReplace attrName:\n" );
+	print ( $attrName );
+	print ( "\n" );
+	
+	string $nodeName[];
+	tokenize($attrName, ".", $nodeName);
+
+	print ( "AEptexColorTextureTypeReplace nodeName:\n" );
+	print ( $nodeName[0] );
+	print ( "\n" );
+	
+	// Disable the drop-down menu if the attribute does not exist
+	if ( `attributeQuery -node $nodeName[0] -exists "locatorOption"` )
+	
+		attrEnumOptionMenuGrp -e -enable true -attribute $attrName locatorEnumOptionMenu;
+		
+	else
+	
+		attrEnumOptionMenuGrp -e -enable false locatorEnumOptionMenu;
+}
+
 global proc AEptexColorTextureTemplate( string $nodeName )
 {
 	AEswatchDisplay $nodeName;
 	editorTemplate -beginScrollLayout;
 
 	editorTemplate -beginLayout "Ptex Texture Attributes" -collapse 0;
-		editorTemplate -addControl "fileName";
-		editorTemplate -addControl "filterType";
+										
+		editorTemplate -callCustom  "AEptexColorTextureNameNew" 
+									"AEptexColorTextureNameReplace" 
+									"fileName";
+					
+		editorTemplate -callCustom  "AEptexColorTextureTypeNew"
+									"AEptexColorTextureTypeReplace"
+									"filterType";
+						
+		//editorTemplate -addControl "filterType";
+		
 		editorTemplate -addControl "filterSize";
+				
 	editorTemplate -endLayout;
 
 	AEtexture2dCommon $nodeName;
