@@ -7,7 +7,7 @@
 // or hard copy form.
 // ==========================================================================
 
-global proc AEptexColorTextureBrowser( string $fileAttribute )
+global proc AEptexBrowser( string $fileAttribute )
 {
 	string  $workspace = `workspace -q -fn`;
 	setWorkingDirectory $workspace "image" "sourceImages";
@@ -28,14 +28,14 @@ global proc AEptexColorTextureBrowser( string $fileAttribute )
 	string $fileNode = $tokenArray[0];
 }
 
-global proc AEptexColorTextureNameReplace (string $fileAttribute)
+global proc AEptexNameReplace (string $fileAttribute)
 {
 	connectControl -fileName textureNameField $fileAttribute;
 
-	button -e -c ( "AEptexColorTextureBrowser \"" + $fileAttribute + "\"" ) browser;
+	button -e -c ( "AEptexBrowser \"" + $fileAttribute + "\"" ) browser;
 }
 
-global proc AEptexColorTextureNameNew (string $fileAttribute)
+global proc AEptexNameNew (string $fileAttribute)
 {
 	setUITemplate -pst attributeEditorTemplate;
 	rowLayout -nc 3 textureNameLayout;
@@ -45,23 +45,23 @@ global proc AEptexColorTextureNameNew (string $fileAttribute)
 	setParent ..;
 	setUITemplate -ppt;
 	
-	AEptexColorTextureNameReplace $fileAttribute;
+	AEptexNameReplace $fileAttribute;
 }
 
-global proc AEptexColorTextureTemplate( string $nodeName )
+global proc AEptexTemplate( string $nodeName )
 {
 	AEswatchDisplay $nodeName;
 	editorTemplate -beginScrollLayout;
 
 	editorTemplate -beginLayout "Ptex Texture Attributes" -collapse 0;
 										
-		editorTemplate -callCustom  "AEptexColorTextureNameNew" 
-									"AEptexColorTextureNameReplace" 
-									"fileName";
+		editorTemplate -callCustom  "AEptexNameNew" 
+									"AEptexNameReplace" 
+									"ptexFileName";
 						
-		editorTemplate -addControl "filterType";
+		editorTemplate -addControl "ptexFilterType";
 		
-		editorTemplate -addControl "filterSize";
+		editorTemplate -addControl "ptexFilterSize";
 				
 	editorTemplate -endLayout;
 

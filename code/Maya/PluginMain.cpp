@@ -24,10 +24,10 @@ MStatus initializePlugin( MObject obj )
 	}
 
 	const MString UserClassify( "texture/2d" );
-	stat = plugin.registerNode( "ptexColorTexture", PtexColorNode::id, &PtexColorNode::creator, &PtexColorNode::initialize, MPxNode::kDependNode, &UserClassify );
+	stat = plugin.registerNode( "ptex", PtexColorNode::id, &PtexColorNode::creator, &PtexColorNode::initialize, MPxNode::kDependNode, &UserClassify );
 	if( !stat )
 	{
-		MGlobal::displayError( MString( "registerNode ptexColorTexture failed: " ) + stat.errorString() );
+		MGlobal::displayError( MString( "registerNode ptex failed: " ) + stat.errorString() );
 		return stat;
 	}
 

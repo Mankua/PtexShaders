@@ -17,36 +17,46 @@
 #include <maya/MDataHandle.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
+#include <maya/MFnEnumAttribute.h>
 #include <maya/MFloatVector.h>
 
 #include "PtexColorNode.h"
 
 #include "Ptexture.h"
 
+/////////////////////////////////////////////////////////////////////
+
+#define MCHECKERROR(STAT,MSG)       \
+	if ( MS::kSuccess != STAT ) {   \
+	cerr << MSG << endl;			\
+	return MS::kFailure;			\
+	}
+
+#define MAKE_INPUT(attr)	\
+	CHECK_MSTATUS(attr.setKeyable(true) );		\
+	CHECK_MSTATUS( attr.setStorable(true) );	\
+	CHECK_MSTATUS( attr.setReadable(true) );	\
+	CHECK_MSTATUS( attr.setWritable(true) );
+
+#define MAKE_OUTPUT(attr)			\
+	CHECK_MSTATUS( attr.setKeyable(false) );	\
+	CHECK_MSTATUS( attr.setStorable(false) );	\
+	CHECK_MSTATUS( attr.setReadable(true) );	\
+	CHECK_MSTATUS( attr.setWritable(false) );
+
 // static data
 MTypeId PtexColorNode::id( 0x00116A40 );
 
 // Attributes
-MObject PtexColorNode::aFileName;
-MObject PtexColorNode::aFilterType;
-MObject PtexColorNode::aFilterSize;
+MObject PtexColorNode::aPtexFileName;
+MObject PtexColorNode::aPtexFilterType;
+MObject PtexColorNode::aPtexFilterSize;
 
 MObject PtexColorNode::aUVPos;
 MObject PtexColorNode::aUVSize;
 
 MObject PtexColorNode::aOutColor;
 
-#define MAKE_INPUT(attr)	\
-    CHECK_MSTATUS( attr.setKeyable(true) );		\
-    CHECK_MSTATUS( attr.setStorable(true) );	\
-    CHECK_MSTATUS( attr.setReadable(true) );	\
-    CHECK_MSTATUS( attr.setWritable(true) );
-
-#define MAKE_OUTPUT(attr)			\
-    CHECK_MSTATUS( attr.setKeyable(false) );	\
-    CHECK_MSTATUS( attr.setStorable(false) );	\
-    CHECK_MSTATUS( attr.setReadable(true) );	\
-    CHECK_MSTATUS( attr.setWritable(false) );
 
 // DESCRIPTION:
 //
@@ -85,55 +95,73 @@ void * PtexColorNode::creator()
 //
 MStatus PtexColorNode::initialize()
 {
-	MFnTypedAttribute tAttr;
-	MFnNumericAttribute nAttr; 
+	MStatus status;
 
-   // Input attributes
+	MFnNumericAttribute numericAttribute;
 
-	aFileName = tAttr.create( "fileName", "f", MFnData::kString );
-	MAKE_INPUT( tAttr );
+	// Input attributes
 
-	aFilterType = nAttr.create( "filterType", "t", MFnNumericData::kByte, 0 );
-	MAKE_INPUT( nAttr );
+	MFnTypedAttribute fileNameAttribute;
+	aPtexFileName = fileNameAttribute.create( "ptexFileName", "f", MFnData::kString );
+	MAKE_INPUT( fileNameAttribute );
+	fileNameAttribute.setConnectable(false);
 
-	aFilterSize = nAttr.create( "filterSize", "s", MFnNumericData::kFloat, 1.0 );
-	MAKE_INPUT( nAttr );
+	MFnEnumAttribute enumAttribute;
+	aPtexFilterType = enumAttribute.create( "ptexFilterType", "t", 0, &status );
+	MCHECKERROR( status, "create filterType attribute" );
+	enumAttribute.addField( "Point",      0 );
+	enumAttribute.addField( "Bilinear",   1 );
+	enumAttribute.addField( "Box",        2 );
+	enumAttribute.addField( "Gaussian",   3 );
+	enumAttribute.addField( "Bicubic",    4 );
+	enumAttribute.addField( "BSpline",    5 );
+	enumAttribute.addField( "CatmullRom", 6 );
+	enumAttribute.addField( "Mitchell",   7 );
+	enumAttribute.setHidden( false );
+	MAKE_INPUT( enumAttribute );
+	enumAttribute.setConnectable(false);
+	MCHECKERROR( status, "Error adding shapeType attribute." );
+
+	MFnNumericAttribute filterSizeAttribute;
+	aPtexFilterSize = filterSizeAttribute.create( "ptexFilterSize", "s", MFnNumericData::kFloat, 1.0 );
+	MAKE_INPUT( filterSizeAttribute );
+	filterSizeAttribute.setConnectable(false);
 
 	// Implicit shading network attributes
 
-    MObject child1 = nAttr.create( "uCoord", "u", MFnNumericData::kFloat);
-    MObject child2 = nAttr.create( "vCoord", "v", MFnNumericData::kFloat);
-    aUVPos = nAttr.create( "uvCoord", "uv", child1, child2);
-    MAKE_INPUT(nAttr);
-    CHECK_MSTATUS( nAttr.setHidden(true) );
+	MObject child1 = numericAttribute.create( "uCoord", "u", MFnNumericData::kFloat);
+	MObject child2 = numericAttribute.create( "vCoord", "v", MFnNumericData::kFloat);
+	aUVPos = numericAttribute.create( "uvCoord", "uv", child1, child2);
+	MAKE_INPUT( numericAttribute );
+	CHECK_MSTATUS( numericAttribute.setHidden(true) );
 
-    child1 = nAttr.create( "uvFilterSizeX", "fsx", MFnNumericData::kFloat);
-    child2 = nAttr.create( "uvFilterSizeY", "fsy", MFnNumericData::kFloat);
-    aUVSize = nAttr.create( "uvFilterSize", "fs", child1, child2 );
-    MAKE_INPUT(nAttr);
-    CHECK_MSTATUS( nAttr.setHidden(true) );
+	child1 = numericAttribute.create( "uvFilterSizeX", "fsx", MFnNumericData::kFloat);
+	child2 = numericAttribute.create( "uvFilterSizeY", "fsy", MFnNumericData::kFloat);
+	aUVSize = numericAttribute.create( "uvFilterSize", "fs", child1, child2 );
+	MAKE_INPUT( numericAttribute );
+	CHECK_MSTATUS( numericAttribute.setHidden(true) );
 
 	// Output attributes
-    aOutColor = nAttr.createColor("outColor", "oc");
-	MAKE_OUTPUT(nAttr);
+	aOutColor = numericAttribute.createColor("outColor", "oc");
+	MAKE_OUTPUT(numericAttribute);
 
 	// Add attributes to the node database.
-    CHECK_MSTATUS( addAttribute(aFileName) );
-	CHECK_MSTATUS( addAttribute(aFilterType) );
-	CHECK_MSTATUS( addAttribute(aFilterSize) );
-    CHECK_MSTATUS( addAttribute(aUVPos) );
-    CHECK_MSTATUS( addAttribute(aUVSize) );
+	CHECK_MSTATUS( addAttribute(aPtexFileName) );
+	CHECK_MSTATUS( addAttribute(aPtexFilterType) );
+	CHECK_MSTATUS( addAttribute(aPtexFilterSize) );
+	CHECK_MSTATUS( addAttribute(aUVPos) );
+	CHECK_MSTATUS( addAttribute(aUVSize) );
 
-    CHECK_MSTATUS( addAttribute(aOutColor) );
+	CHECK_MSTATUS( addAttribute(aOutColor) );
 
 	// All input affect the output color
-    CHECK_MSTATUS( attributeAffects( aFileName,   aOutColor ) );
-	CHECK_MSTATUS( attributeAffects( aFilterSize, aOutColor ) );
-	CHECK_MSTATUS( attributeAffects( aFilterType, aOutColor ) );
-	CHECK_MSTATUS( attributeAffects( aUVPos,      aOutColor ) );
-	CHECK_MSTATUS( attributeAffects( aUVSize,     aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aPtexFileName,   aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aPtexFilterSize, aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aPtexFilterType, aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aUVPos,          aOutColor ) );
+	CHECK_MSTATUS( attributeAffects( aUVSize,         aOutColor ) );
 
-    return MS::kSuccess;
+	return MS::kSuccess;
 }
 
 MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block) 
@@ -145,21 +173,23 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 
 	if ( m_ptex_texture == 0 )
 	{
-		MDataHandle filenameHnd = block.inputValue( aFileName );
-		MDataHandle filterTypeHnd = block.inputValue( aFilterType );
-		MDataHandle filterSizeHnd = block.inputValue( aFilterSize );
+		unsigned int thread_id = (unsigned int)GetCurrentThreadId();
 
-		MString filenameStr = filenameHnd.asString();
-		int filterTypeValue = filterSizeHnd.asInt();
-		double filterSizeValue = filterSizeHnd.asDouble();
+		MDataHandle fileNameHnd = block.inputValue( aPtexFileName );
+		MDataHandle filterTypeHnd = block.inputValue( aPtexFilterType );
 
-		const char * ptexFilename = filenameStr.asChar();
+		MString fileNameStr = fileNameHnd.asString();
+		int filterTypeValue = filterTypeHnd.asInt();
+
+		float &filterSize = block.inputValue( aPtexFilterSize ).asFloat();
+
+		const char * ptexFileName = fileNameStr.asChar();
 
 		Ptex::String error;
 
 		m_ptex_cache = PtexCache::create( 0, 1024 * 1024 );
 
-		m_ptex_texture = m_ptex_cache->get( ptexFilename, error );
+		m_ptex_texture = m_ptex_cache->get( ptexFileName, error );
 
 		if ( m_ptex_texture == 0 )
 		{
@@ -173,14 +203,26 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 
 		m_ptex_num_channels = m_ptex_texture->numChannels();
 
-		PtexFilter::Options opts( PtexFilter::f_point, 0, 0.0f );
-		m_ptex_filter = PtexFilter::getFilter( m_ptex_texture, opts );
+		PtexFilter::FilterType ptexFilterType = PtexFilter::f_point;
 
-		bool stop_here;
-		stop_here = true;
+		switch ( filterTypeValue )
+		{
+			case 0:   ptexFilterType = PtexFilter::f_point;        break;
+			case 1:   ptexFilterType = PtexFilter::f_bilinear;     break;
+			case 2:   ptexFilterType = PtexFilter::f_box;          break;
+			case 3:   ptexFilterType = PtexFilter::f_gaussian;     break;
+			case 4:   ptexFilterType = PtexFilter::f_bicubic;      break;
+			case 5:   ptexFilterType = PtexFilter::f_bspline;      break;
+			case 6:   ptexFilterType = PtexFilter::f_catmullrom;   break;
+			case 7:   ptexFilterType = PtexFilter::f_mitchell;     break;
+		}
+
+		PtexFilter::Options opts( ptexFilterType, 0, filterSize );
+		m_ptex_filter = PtexFilter::getFilter( m_ptex_texture, opts );
 	}
 
-    float2 & uv = block.inputValue( aUVPos ).asFloat2();
+	float2 &uv  = block.inputValue( aUVPos  ).asFloat2();
+	float2 &duv = block.inputValue( aUVSize ).asFloat2();
 
 	unsigned int thread_id = (unsigned int)GetCurrentThreadId();
 
@@ -192,18 +234,18 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 	float v = uv[ 1 ];
 
 	float result[4];
-	m_ptex_filter->eval( result, 0, m_ptex_num_channels, f, u, v, 0, 0, 0, 0 );
+	m_ptex_filter->eval( result, 0, m_ptex_num_channels, f, u, v, duv[ 0 ], 0, 0, duv[ 1 ] );
 
 	LeaveCriticalSection( &m_critical_section );
 
 	// set ouput color attribute
 	MFloatVector resultColor( result[ 0 ], result[ 1 ], result[ 2 ] );
 	MDataHandle outColorHandle = block.outputValue( aOutColor );
-    MFloatVector& outColor = outColorHandle.asFloatVector();
-    outColor = resultColor;
-    outColorHandle.setClean();
+	MFloatVector& outColor = outColorHandle.asFloatVector();
+	outColor = resultColor;
+	outColorHandle.setClean();
 
-    return MS::kSuccess;
+	return MS::kSuccess;
 }
 
 bool PtexColorNode::renderCallback( const MRenderData &data )
