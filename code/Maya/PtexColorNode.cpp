@@ -62,14 +62,12 @@ MObject PtexColorNode::aOutColor;
 //
 PtexColorNode::PtexColorNode()
 {
-	InitializeCriticalSection( &m_critical_section );
 }
 
 // DESCRIPTION:
 //
 PtexColorNode::~PtexColorNode()
 {
-	DeleteCriticalSection(&m_critical_section);
 	MRenderCallback::removeCallback( this );
 }
 
@@ -173,15 +171,13 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 
 	if ( m_ptex_texture == 0 )
 	{
-		unsigned int thread_id = (unsigned int)GetCurrentThreadId();
-
 		MDataHandle fileNameHnd = block.inputValue( aPtexFileName );
 		MDataHandle filterTypeHnd = block.inputValue( aPtexFilterType );
 
 		MString fileNameStr = fileNameHnd.asString();
 		int filterTypeValue = filterTypeHnd.asInt();
 
-		float &filterSize = block.inputValue( aPtexFilterSize ).asFloat();
+		const float &filterSize = block.inputValue( aPtexFilterSize ).asFloat();
 
 		const char * ptexFileName = fileNameStr.asChar();
 
@@ -221,12 +217,8 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 		m_ptex_filter = PtexFilter::getFilter( m_ptex_texture, opts );
 	}
 
-	float2 &uv  = block.inputValue( aUVPos  ).asFloat2();
-	float2 &duv = block.inputValue( aUVSize ).asFloat2();
-
-	unsigned int thread_id = (unsigned int)GetCurrentThreadId();
-
-	EnterCriticalSection( &m_critical_section );
+	const float2 &uv  = block.inputValue( aUVPos  ).asFloat2();
+	const float2 &duv = block.inputValue( aUVSize ).asFloat2();
 
 	int f = (int)uv[ 0 ];
 
@@ -234,10 +226,11 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 	float v = uv[ 1 ];
 
 	float result[4];
+	
+	m_critical_section.lock();
 	m_ptex_filter->eval( result, 0, m_ptex_num_channels, f, u, v, duv[ 0 ], 0, 0, duv[ 1 ] );
-
-	LeaveCriticalSection( &m_critical_section );
-
+	m_critical_section.unlock();
+	
 	// set ouput color attribute
 	MFloatVector resultColor( result[ 0 ], result[ 1 ], result[ 2 ] );
 	MDataHandle outColorHandle = block.outputValue( aOutColor );

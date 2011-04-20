@@ -3,6 +3,7 @@
 
 #include <map>
 
+#include <maya/MMutexLock.h>
 #include <maya/MPxNode.h>
 #include <maya/MRenderCallback.h>
 
@@ -48,7 +49,7 @@ private:
 	int m_ptex_num_channels;
 	PtexFilter * m_ptex_filter;
 
-	CRITICAL_SECTION m_critical_section;
+	MMutexLock m_critical_section;
 };
 
 #endif
