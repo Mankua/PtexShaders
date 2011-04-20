@@ -168,8 +168,13 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 	{
 		return MS::kUnknownParameter;
 	}
+	
+	if ( m_ptex_cache == NULL )
+	{
+		m_ptex_cache = PtexCache::create( 0, 1024 * 1024 );
+	}
 
-	if ( m_ptex_texture == 0 )
+	if ( m_ptex_cache && m_ptex_texture == 0 )
 	{
 		MDataHandle fileNameHnd = block.inputValue( aPtexFileName );
 		MDataHandle filterTypeHnd = block.inputValue( aPtexFilterType );
@@ -179,21 +184,19 @@ MStatus PtexColorNode::compute(const MPlug& plug, MDataBlock& block)
 
 		const float &filterSize = block.inputValue( aPtexFilterSize ).asFloat();
 
-		const char * ptexFileName = fileNameStr.asChar();
-
-		Ptex::String error;
-
-		m_ptex_cache = PtexCache::create( 0, 1024 * 1024 );
-
-		m_ptex_texture = m_ptex_cache->get( ptexFileName, error );
-
+		if ( fileNameStr.length() )
+		{
+			Ptex::String error;
+			m_ptex_texture = m_ptex_cache->get( fileNameStr.asChar(), error );
+		}
+		
 		if ( m_ptex_texture == 0 )
 		{
-			MFloatVector resultColor( 1.0f, 0.0f, 1.0f );
-
 			MDataHandle outColorHandle = block.outputValue( aOutColor );
 			MFloatVector& outColor = outColorHandle.asFloatVector();
-			outColor = resultColor;
+			outColor.x = 1.0f;
+			outColor.y = 0.0f;
+			outColor.z = 1.0f;
 			return MS::kSuccess;
 		}
 
