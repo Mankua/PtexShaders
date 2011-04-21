@@ -301,12 +301,12 @@ void ModifierPtex::ModifyObject(TimeValue t, ModContext &mc, ObjectState *os, IN
 
 				Point3 tv;
 
-				if      ( i_v == 0 ) tv = Point3( 0.0f, 0.0f, 0.0f );
-				else if ( i_v == 1 ) tv = Point3( 1.0f, 0.0f, 0.0f );
-				else if ( i_v == 2 ) tv = Point3( 1.0f, 1.0f, 0.0f );
-				else                 tv = Point3( 0.0f, 1.0f, 0.0f );
+				if      ( i_v == 0 ) tv = Point3( (float)i_f,        0.0f, 0.0f );
+				else if ( i_v == 1 ) tv = Point3( (float)i_f + 1.0f, 0.0f, 0.0f );
+				else if ( i_v == 2 ) tv = Point3( (float)i_f + 1.0f, 1.0f, 0.0f );
+				else                 tv = Point3( (float)i_f,        1.0f, 0.0f );
 
-				tv.z = (float)i_f;
+				tv.z = 0.0f;
 
 				mc->v[ tvert_id ] = tv;
 			

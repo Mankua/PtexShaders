@@ -39,7 +39,7 @@ BEGIN
     LTEXT           "Filter :",IDC_STATIC,11,46,20,8
     LTEXT           "Ptex File :",IDC_STATIC,11,16,32,8
     CONTROL         "",IDC_TEX_PTEX_FILE,"CustButton",WS_TABSTOP,45,13,162,12
-    COMBOBOX        IDC_TEX_UVW_SOURCE,45,28,90,45,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_TEX_UVW_TYPE,45,28,90,45,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     COMBOBOX        IDC_TEX_FILTER_TYPE,45,43,90,53,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     GROUPBOX        "",IDC_STATIC,4,72,209,24
     PUSHBUTTON      "About",IDC_TEX_ABOUT,167,79,43,14
@@ -67,7 +67,7 @@ CAPTION "About Ptex for 3dsmax"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "",IDC_STATIC,4,0,239,61
-    LTEXT           "Ptex for 3dsmax [ Alpha 03 ]\nDecember 18, 2010\n\nDeveloped by Diego A. Castaño\nAll Rights Reserved © 2001-2009\nMankua Software Inc.",IDC_STATIC,110,7,111,49
+    LTEXT           "Ptex for 3dsmax [ Alpha 04 ]\nMarch 31, 2011\n\nDeveloped by Diego A. Castaño\nAll Rights Reserved © 2001-2009\nMankua Software Inc.",IDC_STATIC,110,7,111,49
     CONTROL         107,IDC_ABOUT_MANKUA,"Static",SS_BITMAP | SS_NOTIFY,8,8,97,49,WS_EX_CLIENTEDGE
     LTEXT           "PTEX SOFTWARE\nCopyright 2009 Disney Enterprises, Inc. \nAll rights reserved",IDC_STATIC,110,71,132,26
     GROUPBOX        "",IDC_STATIC,4,62,239,55

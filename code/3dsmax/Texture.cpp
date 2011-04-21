@@ -69,8 +69,8 @@ TexturePtexClassDesc::TexturePtexClassDesc() {
 	IMtlRender_Compatibility_MtlBase::Init( *this );
 }
 
-bool TexturePtexClassDesc::IsCompatibleWithRenderer(ClassDesc& rendererClassDesc) {
-
+bool TexturePtexClassDesc::IsCompatibleWithRenderer(ClassDesc& rendererClassDesc)
+{
 	Class_ID classID = rendererClassDesc.ClassID();
 
 	if ( classID == MRRENDERER_CLASSID || classID == SCANLINERENDERER_CLASS_ID )
@@ -210,7 +210,7 @@ public:
 	}
 
 	void Destroy() 
-	{ 
+	{
 		if ( m_file_button )
 		{
 			ReleaseICustButton( m_file_button );
@@ -256,10 +256,10 @@ INT_PTR TexturePtexDlgProc::DlgProc( TimeValue t, IParamMap2 *map, HWND hWnd, UI
 
 			int uvw_type = m_tex->m_pblock->GetInt( TexturePtex::UVW_TYPE );
 
-			SendDlgItemMessage( hWnd, IDC_TEX_UVW_SOURCE, CB_RESETCONTENT, 0, 0 );
-			SendDlgItemMessage( hWnd, IDC_TEX_UVW_SOURCE, CB_ADDSTRING, 0, (LPARAM)(const TCHAR*)_T("Explicit Map Channel"));
-			SendDlgItemMessage( hWnd, IDC_TEX_UVW_SOURCE, CB_ADDSTRING, 0, (LPARAM)(const TCHAR*)_T("Vertex Color Channel"));
-			SendDlgItemMessage( hWnd, IDC_TEX_UVW_SOURCE, CB_SETCURSEL, uvw_type, 0 );
+			SendDlgItemMessage( hWnd, IDC_TEX_UVW_TYPE, CB_RESETCONTENT, 0, 0 );
+			SendDlgItemMessage( hWnd, IDC_TEX_UVW_TYPE, CB_ADDSTRING, 0, (LPARAM)(const TCHAR*)_T("Explicit Map Channel"));
+			SendDlgItemMessage( hWnd, IDC_TEX_UVW_TYPE, CB_ADDSTRING, 0, (LPARAM)(const TCHAR*)_T("Vertex Color Channel"));
+			SendDlgItemMessage( hWnd, IDC_TEX_UVW_TYPE, CB_SETCURSEL, uvw_type, 0 );
 
 			// Init Ptex filter
 
@@ -296,6 +296,13 @@ INT_PTR TexturePtexDlgProc::DlgProc( TimeValue t, IParamMap2 *map, HWND hWnd, UI
 						m_tex->m_pblock->SetValue( TexturePtex::PTEX_FILE, 0, ptex_filename );
 						m_file_button->SetText( ptex_filename );
 					}
+				}
+				break;
+
+				case IDC_TEX_UVW_TYPE:
+				{
+					int uvw_type = SendDlgItemMessage( hWnd, IDC_TEX_UVW_TYPE, CB_GETCURSEL, 0, 0 );
+					m_tex->m_pblock->SetValue( TexturePtex::UVW_TYPE, 0, uvw_type );
 				}
 				break;
 
@@ -339,6 +346,7 @@ INT_PTR TexturePtexDlgProc::DlgProc( TimeValue t, IParamMap2 *map, HWND hWnd, UI
 		}
 		break;
 	}
+
 	return 0;
 }
 
@@ -546,8 +554,11 @@ ULONG TexturePtex::LocalRequirements( int subMtlNum )
 
 void TexturePtex::LocalMappingsRequired( int  subMtlNum, BitArray &mapreq, BitArray &bumpreq )
 {
-	mapreq.Set( 1 );
-	bumpreq.Set( 1 );
+	if   ( m_pblock->GetInt( UVW_TYPE ) == 0 ) m_uv_channel = m_pblock->GetInt( UVW_CHANNEL );
+	else                                       m_uv_channel = 0;
+
+	mapreq.Set( m_uv_channel );
+	bumpreq.Set( m_uv_channel );
 }
 
 void TexturePtex::Update(TimeValue t, Interval& valid) 
@@ -645,10 +656,12 @@ AColor TexturePtex::EvalColor(ShadeContext& sc)
 	result[ 2 ] = 0.0f;
 	result[ 3 ] = 1.0f;
 
-	int face_id = (int)sc.UVW( m_uv_channel ).z;
+	int face_id = (int)sc.UVW( m_uv_channel ).x;
 
 	float u = sc.UVW( m_uv_channel ).x;
 	float v = sc.UVW( m_uv_channel ).y;
+
+	u = u - float( face_id );
 
 	float du = sc.DUVW( m_uv_channel ).x;
 	float dv = sc.DUVW( m_uv_channel ).y;
@@ -766,10 +779,12 @@ Point3 TexturePtex::EvalNormalPerturb( ShadeContext& sc )
 	int x = sc.ScreenCoord().x;
 	int y = sc.ScreenCoord().y;
 
+	int face_id = (int)sc.UVW( m_uv_channel ).x;
+
 	Point3 uv = sc.UVW( m_uv_channel );
 	Point3 duv = sc.DUVW( m_uv_channel );
 
-	int face_id = (int)sc.UVW( m_uv_channel ).z;
+	uv.x = uv.x - float( face_id );
 
 	if ( sc.IsSuperSampleOn() && sc.IsTextureSuperSampleOn() && sc.GetSampleSizeScale() > 0.0f )
 	{
@@ -943,8 +958,16 @@ void TexturePtex::TranslateParameters( imrTranslation& translationInterface, imr
 
 		TranslateMRShaderParameter( shader_pblock, _T("filter_size"), m_filter_size );
 		TranslateMRShaderParameter( shader_pblock, _T("ptex_file_path"), m_ptex_file_path );
-		TranslateMRShaderParameter( shader_pblock, _T("uv_index"), m_uv_channel );
 		TranslateMRShaderParameter( shader_pblock, _T("filter_type"), m_filter_id );
+		
+		ParamID paramID;
+		if ( GetParamIDByName( paramID, _T("uv_index"), shader_pblock ) )
+		{
+			int uv_index = m_uv_channel;
+			if      ( m_uv_channel == 0 ) uv_index = 1;
+			else if ( m_uv_channel == 1 ) uv_index = 0;
+			shader_pblock->SetValue( paramID, 0, uv_index );
+		}
 
 		valid &= localValid;
 	}

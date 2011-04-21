@@ -22,6 +22,7 @@
 #define IDC_MOD_UVW_CHANNEL             1001
 #define IDC_MOD_UVW_CHANNEL_SPIN        1002
 #define IDC_TEX_UVW_SOURCE              1013
+#define IDC_TEX_UVW_TYPE                1013
 #define IDC_TEX_FILTER_TYPE             1014
 #define IDC_MOD_UVW_TYPE_UVW            1014
 #define IDC_MOD_UVW_TYPE_VCOL           1015
@@ -30,7 +31,6 @@
 #define IDC_TEX_ABOUT                   1023
 #define IDC_MOD_HELP                    1024
 #define IDC_MOD_ABOUT                   1025
-#define IDC_CHECK1                      1026
 #define IDC_TEX_PREMULTIPLIED_ALPHA     1026
 #define IDC_ABOUT_MANKUA                1057
 #define IDC_ABOUT_PTEX                  1059

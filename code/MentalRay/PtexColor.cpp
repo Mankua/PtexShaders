@@ -61,9 +61,12 @@ struct PtexColorData
 	std::map< int, PtexFilter * > ptex_filters;
 };
 
-std::map< std::string , PtexColorData * > ptex_datas;
+std::map<unsigned int, PtexColorData*> ptex_datas;
 
-extern "C" DLLEXPORT int PtexColor_version(void){ return 1; }
+extern "C" DLLEXPORT int PtexColor_version(void)
+{
+	return 1; 
+}
 
 extern "C" DLLEXPORT void PtexColor_init( miState * state, PtexColor_params * in_params, miBoolean * inst_req )
 {
@@ -77,12 +80,42 @@ extern "C" DLLEXPORT void PtexColor_init( miState * state, PtexColor_params * in
 
 extern "C" DLLEXPORT void PtexColor_exit( miState * state, PtexColor_params * in_params )
 {
+	for ( std::map<unsigned int, PtexColorData*>::iterator it_d =  ptex_datas.begin(); it_d != ptex_datas.end(); it_d++ )
+	{
+		for ( std::map< int, PtexFilter * >::iterator it_f = it_d->second->ptex_filters.begin(); it_f != it_d->second->ptex_filters.end(); it_f++ )
+		{
+			unsigned int thread_id = it_f->first;
+			PtexFilter * ptex_filter = it_f->second;
+
+			ptex_filter->release();
+			ptex_filter = 0;
+		}
+
+		it_d->second->ptex_filters.clear();
+
+		if ( it_d->second->ptex_texture )
+		{
+			it_d->second->ptex_texture->release();
+			it_d->second->ptex_texture = 0;
+		}
+
+		if ( it_d->second->ptex_cache )
+		{
+			it_d->second->ptex_cache->release();
+			it_d->second->ptex_cache = 0;
+		}
+	}
+
+	ptex_datas.clear();
+
 	mi_delete_lock( &mr_lock );
 }
 
 extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state, PtexColor_params * in_params )
 {
+	unsigned int in_params_id = (unsigned int)in_params;
 	int thread_id = (int)state->thread;
+
 	PtexFilter * ptex_filter = 0;
 
 	miTag ptex_file_path_tag = *mi_eval_tag( &in_params->ptex_file_path );
@@ -90,11 +123,7 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 	miInteger filter_id = *mi_eval_integer( &in_params->filter_type );
 	miScalar filter_size = *mi_eval_scalar( &in_params->filter_size );
 
-	uv_index = 0;
-
-	std::string ptex_file_path = miaux_tag_to_string( ptex_file_path_tag, "c:\\Temp" );
-
-	std::map< std::string, PtexColorData * >::iterator it_data = ptex_datas.find( ptex_file_path );
+	std::map<unsigned int, PtexColorData*>::iterator it_data = ptex_datas.find( in_params_id );
 
 	PtexColorData * ptex_color_data = 0;
 
@@ -106,15 +135,16 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 
 		mi_lock( mr_lock );
 
-		std::map< std::string, PtexColorData * >::iterator it_data_2 = ptex_datas.find( ptex_file_path );
-
+		std::map<unsigned int, PtexColorData*>::iterator it_data_2 = ptex_datas.find( in_params_id );
+		
 		if ( it_data_2 == ptex_datas.end() )
 		{
 			Ptex::String error;
-
 			PtexCache * ptex_cache = PtexCache::create( 0, 1024 * 1024 );
-
+			std::string ptex_file_path = miaux_tag_to_string( ptex_file_path_tag, "c:\\Temp" );
 			PtexTexture * ptex_texture = ptex_cache->get( ptex_file_path.c_str(), error );
+
+			state->user_size = ptex_file_path.length();
 
 			if ( ptex_texture )
 			{
@@ -125,13 +155,13 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 				ptex_color_data->ptex_texture = ptex_texture;
 				ptex_color_data->ptex_num_channels = ptex_texture->numChannels();
 
-				ptex_datas.insert( std::pair< std::string, PtexColorData * >( ptex_file_path, ptex_color_data ) );
+				ptex_datas.insert( std::pair<unsigned int, PtexColorData*>( in_params_id, ptex_color_data ) );
 			}
 		}
 
 		mi_unlock( mr_lock );
 
-		std::map< std::string, PtexColorData * >::iterator it_data_3 = ptex_datas.find( ptex_file_path );
+		std::map<unsigned int, PtexColorData*>::iterator it_data_3 = ptex_datas.find( in_params_id );
 
 		ptex_color_data = it_data_3->second;
 	}
@@ -140,7 +170,7 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 		ptex_color_data = it_data->second;
 	}
 
-	std::map< int, PtexFilter * >::iterator it_filter = ptex_color_data->ptex_filters.find( thread_id );
+	std::map<int, PtexFilter *>::iterator it_filter = ptex_color_data->ptex_filters.find( thread_id );
 
 	if ( it_filter == ptex_color_data->ptex_filters.end() )
 	{
@@ -172,18 +202,6 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 			ptex_filter = PtexFilter::getFilter( ptex_color_data->ptex_texture, opts );
 
 			ptex_color_data->ptex_filters.insert( std::pair< int, PtexFilter * >( thread_id, ptex_filter ) );
-
-			//
-
-			float u = state->tex_list[ uv_index ].x;
-			float v = state->tex_list[ uv_index ].y;
-			float w = state->tex_list[ uv_index ].z;
-
-			miVector deriv = state->derivs[ uv_index ];
-
-			float du = deriv.x;
-			float dv = deriv.y;
-			float dw = deriv.z;
 		}
 
 		mi_unlock( mr_lock );
@@ -201,12 +219,15 @@ extern "C" DLLEXPORT miBoolean PtexColor( miColor * out_result, miState * state,
 
 	float u = state->tex_list[ uv_index ].x;
 	float v = state->tex_list[ uv_index ].y;
-	float w = state->tex_list[ uv_index ].z;
 
-	float du = 0.0f;
-	float dv = 0.0f;
+	miVector deriv = state->derivs[ uv_index ];
 
-	int face_id = (int)( w + 0.5f );
+	float du = deriv.x;
+	float dv = deriv.y;
+
+	int face_id = (int)( u );
+
+	u = u - float( face_id );
 
 	float result[4];
 	ptex_filter->eval( result, 0, ptex_color_data->ptex_num_channels, face_id, u, v, du, 0, 0, dv );
